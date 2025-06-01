@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | Tienda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #ededed;
+            color: #333;
+            font-family: 'Roboto', Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: #fff;
+            border-radius: 0;
+            box-shadow: none;
+            border: 1px solid #ededed;
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo {
+            font-family: 'Roboto', Arial, sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-label { color: #666; font-weight: 500; }
+        .form-control {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ededed;
+            border-radius: 0;
+            font-size: 1rem;
+            box-shadow: none;
+        }
+        .form-control:focus {
+            background: #fff;
+            color: #333;
+            border-color: #fff159;
+            box-shadow: none;
+        }
+        .btn-login {
+            background: #fff159;
+            color: #333;
+            border: none;
+            border-radius: 0;
+            font-weight: 700;
+            font-size: 1.07rem;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 0.5rem;
+            box-shadow: none;
+            transition: background 0.18s;
+        }
+        .btn-login:hover {
+            background: #ffe600;
+            color: #222;
+        }
+        .error-message {
+            color: #f87171;
+            font-size: 0.98rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .is-invalid {
+            border-color: #f87171 !important;
+            background: #fff0f0 !important;
+        }
+        .snackbar-error {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f87171;
+            color: #fff;
+            border-radius: 0.5rem;
+            font-size: 1.03rem;
+            font-weight: 600;
+            margin-top: 1.15rem;
+            padding: 0.7rem 1.2rem;
+            box-shadow: 0 2px 12px #f8717133;
+            min-width: 220px;
+            max-width: 100%;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            position: relative;
+        }
+        .snackbar-icon {
+            margin-right: 0.7rem;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">Tienda</div>
+    <div class="subtitle">Ingresa tus credenciales para ver los productos</div>
+    <form th:action="@{/login}" th:object="${loginRequest}" method="post" novalidate>
+        <div class="mb-3">
+            <label for="username" class="form-label">Usuario</label>
+            <input th:field="*{username}" type="text" class="form-control" id="username" placeholder="Usuario" required autocomplete="username"
+                   th:classappend="${#fields.hasErrors('username')}? 'is-invalid'">
+            <div th:if="${#fields.hasErrors('username')}" class="error-message" th:errors="*{username}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input th:field="*{password}" type="password" class="form-control" id="password" placeholder="Contraseña" required autocomplete="current-password"
+                   th:classappend="${#fields.hasErrors('password')}? 'is-invalid'">
+            <div th:if="${#fields.hasErrors('password')}" class="error-message" th:errors="*{password}"></div>
+        </div>
+        <button type="submit" class="btn btn-login">Iniciar sesión</button>
+        <div th:if="${loginError}" class="snackbar-error show">
+            <span th:text="${loginError}"></span>
+        </div>
+    </form>
+</div>
+</body>
+</html>
