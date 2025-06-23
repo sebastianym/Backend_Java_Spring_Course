@@ -1,0 +1,425 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+		"name": "Hotel API (Completa)",
+		"description": "Colección de Postman completa con todos los endpoints, DTOs de Request/Response, IDs autoincrementables y flujo de seeding.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "--- Flujo de Seeding (Ejecutar en orden) ---",
+			"description": "Peticiones para poblar la base de datos con datos de ejemplo. Ejecutar en el orden listado para respetar las dependencias.",
+			"item": [
+				{
+					"name": "1. Crear Hotel",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Hotel Paraíso Tropical\",\n    \"ciudad\": \"Cartagena\",\n    \"telefono\": \"3123456789\",\n    \"correo\": \"reservas@paraisotropical.com\",\n    \"direccion\": \"Bocagrande, Av. San Martín #1-15\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/hoteles", "host": ["{{baseUrl}}"], "path": ["api", "hoteles"] }
+					}
+				},
+				{
+					"name": "2. Crear Tipo de Habitacion",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idHotel\": 1,\n    \"nombre\": \"Suite Presidencial\",\n    \"cantidad\": 5\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/tipos-habitacion", "host": ["{{baseUrl}}"], "path": ["api", "tipos-habitacion"] }
+					}
+				},
+				{
+					"name": "3. Crear Habitacion",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroHabitacion\": 101,\n    \"idTipoHabitacion\": 1,\n    \"precioDia\": 500000,\n    \"disponible\": true,\n    \"idHotel\": 1\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/habitaciones", "host": ["{{baseUrl}}"], "path": ["api", "habitaciones"] }
+					}
+				},
+				{
+					"name": "4. Crear Cliente",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"primerNombre\": \"Juan\",\n    \"primerApellido\": \"Pérez\",\n    \"cedula\": 12345678,\n    \"direccion\": \"Calle Falsa 123\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/clientes", "host": ["{{baseUrl}}"], "path": ["api", "clientes"] }
+					}
+				},
+				{
+					"name": "5. Crear Reserva",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fechaInicio\": \"2025-12-20T15:00:00.000Z\",\n    \"fechaFinal\": \"2025-12-23T12:00:00.000Z\",\n    \"cantidadDias\": 3,\n    \"estado\": true,\n    \"idHabitacion\": 1,\n    \"idCliente\": 1\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/reservas", "host": ["{{baseUrl}}"], "path": ["api", "reservas"] }
+					}
+				},
+                {
+					"name": "6. Crear Pago",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha\": \"2025-12-20T15:05:00.000Z\",\n    \"idReserva\": 1,\n    \"metodoPago\": \"Tarjeta de Crédito\",\n    \"pagoTotal\": 1500000\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/pagos", "host": ["{{baseUrl}}"], "path": ["api", "pagos"] }
+					}
+				},
+                {
+					"name": "7. Crear Factura",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idReserva\": 1,\n    \"idPago\": 1,\n    \"fechaEmision\": 1734711900,\n    \"valorTotal\": 1500000\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/facturas", "host": ["{{baseUrl}}"], "path": ["api", "facturas"] }
+					}
+				},
+				{
+					"name": "8. Crear Usuario para Cliente",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombreUsuario\": \"juan.perez\",\n    \"contrasena\": \"password123\",\n    \"rol\": \"cliente\",\n    \"idCliente\": 1\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/api/usuarios", "host": ["{{baseUrl}}"], "path": ["api", "usuarios"] }
+					}
+				}
+			]
+		},
+        {
+			"name": "Entidades Principales",
+			"item": [
+                {
+                    "name": "Hoteles",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/hoteles" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/hoteles/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/hoteles/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Hotel Nuevo\",\n    \"ciudad\": \"Medellín\",\n    \"telefono\": \"3101234567\",\n    \"correo\": \"contacto@hotelnuevo.com\",\n    \"direccion\": \"Poblado, Cra 43A #6S-15\"\n}" },
+                                "url": "{{baseUrl}}/api/hoteles"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Hotel Nuevo Actualizado\"\n}" },
+                                "url": "{{baseUrl}}/api/hoteles/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Tipos de Habitacion",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/tipos-habitacion" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/tipos-habitacion/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tipos-habitacion/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"idHotel\": 1,\n    \"nombre\": \"Doble Estándar\",\n    \"cantidad\": 20\n}" },
+                                "url": "{{baseUrl}}/api/tipos-habitacion"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"nombre\": \"Doble Superior\",\n    \"cantidad\": 25\n}" },
+                                "url": "{{baseUrl}}/api/tipos-habitacion/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Habitaciones",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/habitaciones" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/habitaciones/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/habitaciones/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"numeroHabitacion\": 202,\n    \"idTipoHabitacion\": 2,\n    \"precioDia\": 250000,\n    \"disponible\": true,\n    \"idHotel\": 1\n}" },
+                                "url": "{{baseUrl}}/api/habitaciones"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"precioDia\": 275000,\n    \"disponible\": false\n}" },
+                                "url": "{{baseUrl}}/api/habitaciones/1"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Gestión de Clientes y Reservas",
+            "item": [
+                {
+                    "name": "Clientes",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/clientes" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/clientes/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/clientes/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"primerNombre\": \"Maria\",\n    \"primerApellido\": \"Lopez\",\n    \"cedula\": 98765432,\n    \"direccion\": \"Avenida Siempre Viva 742\"\n}" },
+                                "url": "{{baseUrl}}/api/clientes"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"direccion\": \"Nueva Dirección 456\"\n}" },
+                                "url": "{{baseUrl}}/api/clientes/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Reservas",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/reservas" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/reservas/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/reservas/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"fechaInicio\": \"2026-01-10T15:00:00.000Z\",\n    \"fechaFinal\": \"2026-01-15T12:00:00.000Z\",\n    \"cantidadDias\": 5,\n    \"estado\": true,\n    \"idHabitacion\": 2,\n    \"idCliente\": 2\n}" },
+                                "url": "{{baseUrl}}/api/reservas"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"estado\": false\n}" },
+                                "url": "{{baseUrl}}/api/reservas/1"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Financiero",
+            "item": [
+                {
+                    "name": "Pagos",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/pagos" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/pagos/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/pagos/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"fecha\": \"2026-01-10T15:05:00.000Z\",\n    \"idReserva\": 2,\n    \"metodoPago\": \"PSE\",\n    \"pagoTotal\": 1250000\n}" },
+                                "url": "{{baseUrl}}/api/pagos"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"metodoPago\": \"Efectivo\"\n}" },
+                                "url": "{{baseUrl}}/api/pagos/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Facturas",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/facturas" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/facturas/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/facturas/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"idReserva\": 2,\n    \"idPago\": 2,\n    \"fechaEmision\": 1768081500,\n    \"valorTotal\": 1250000\n}" },
+                                "url": "{{baseUrl}}/api/facturas"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"valorTotal\": 1300000\n}" },
+                                "url": "{{baseUrl}}/api/facturas/1"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Administración de Usuarios",
+            "item": [
+                {
+                    "name": "Usuarios",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/usuarios/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"nombreUsuario\": \"maria.lopez\",\n    \"contrasena\": \"securePass987\",\n    \"rol\": \"cliente\",\n    \"idCliente\": 2\n}" },
+                                "url": "{{baseUrl}}/api/usuarios"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"rol\": \"cliente_vip\"\n}" },
+                                "url": "{{baseUrl}}/api/usuarios/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Empleados",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/empleados" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/empleados/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/empleados/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"correo\": \"recepcion@hotel.com\",\n    \"telefono\": \"3009876543\",\n    \"primerNombre\": \"Luisa\",\n    \"primerApellido\": \"Fernandez\"\n}" },
+                                "url": "{{baseUrl}}/api/empleados"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"correo\": \"luisa.fernandez@hotel.com\"\n}" },
+                                "url": "{{baseUrl}}/api/empleados/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Administradores",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/administradores" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/administradores/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/administradores/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"primerNombre\": \"Pedro\",\n    \"primerApellido\": \"Ramirez\",\n    \"correo\": \"pedro.ramirez@hotel.com\",\n    \"telefono\": \"3216549870\"\n}" },
+                                "url": "{{baseUrl}}/api/administradores"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"telefono\": \"3211112233\"\n}" },
+                                "url": "{{baseUrl}}/api/administradores/1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Administradores Generales",
+                    "item": [
+                        { "name": "GET All", "request": { "method": "GET", "url": "{{baseUrl}}/api/administradores-generales" } },
+                        { "name": "GET by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/administradores-generales/1" } },
+                        { "name": "DELETE", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/administradores-generales/1" } },
+                        { 
+                            "name": "POST Create", 
+                            "request": { 
+                                "method": "POST", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"correo\": \"gerencia@hotel.com\",\n    \"telefono\": \"3501234567\",\n    \"primerNombre\": \"Sofia\",\n    \"primerApellido\": \"Vargas\"\n}" },
+                                "url": "{{baseUrl}}/api/administradores-generales"
+                            }
+                        },
+                        { 
+                            "name": "PUT Update", 
+                            "request": { 
+                                "method": "PUT", 
+                                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                                "body": { "mode": "raw", "raw": "{\n    \"segundoApellido\": \"Castro\"\n}" },
+                                "url": "{{baseUrl}}/api/administradores-generales/1"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
