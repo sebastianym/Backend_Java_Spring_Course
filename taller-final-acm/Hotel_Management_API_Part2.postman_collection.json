@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "c8d9e4f2-a7b6-5c3d-8e4f-2a7b6c5d3e4f",
+		"name": "Hotel Management API - Part 2",
+		"description": "Endpoints para gestión de hoteles y habitaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "2. Gestión de Hoteles",
+			"item": [
+				{
+					"name": "Obtener todos los hoteles (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/hoteles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles"
+							]
+						},
+						"description": "Obtiene la lista de todos los hoteles (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener hotel por ID (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/hoteles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles",
+								"1"
+							]
+						},
+						"description": "Obtiene un hotel por su ID (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear hotel (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Hotel Nuevo\",\n    \"ciudad\": \"Bogotá\",\n    \"telefono\": \"3001234567\",\n    \"correo\": \"hotel.nuevo@example.com\",\n    \"direccion\": \"Calle 123 #45-67\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/hoteles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles"
+							]
+						},
+						"description": "Crea un nuevo hotel (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar hotel (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Hotel Actualizado\",\n    \"ciudad\": \"Medellín\",\n    \"telefono\": \"3009876543\",\n    \"correo\": \"hotel.actualizado@example.com\",\n    \"direccion\": \"Avenida 456 #78-90\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/hoteles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles",
+								"1"
+							]
+						},
+						"description": "Actualiza un hotel existente (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar hotel (Administrador General)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_general_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/hoteles/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles",
+								"1"
+							]
+						},
+						"description": "Elimina un hotel (requiere rol de ADMINISTRADOR_GENERAL)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Gestión de Tipos de Habitación",
+			"item": [
+				{
+					"name": "Obtener todos los tipos de habitación",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cliente_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tipos-habitacion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tipos-habitacion"
+							]
+						},
+						"description": "Obtiene todos los tipos de habitación (requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener tipo de habitación por ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cliente_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tipos-habitacion/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tipos-habitacion",
+								"1"
+							]
+						},
+						"description": "Obtiene un tipo de habitación por su ID (requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear tipo de habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idHotel\": 1,\n    \"nombre\": \"Suite Presidencial\",\n    \"cantidad\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tipos-habitacion",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tipos-habitacion"
+							]
+						},
+						"description": "Crea un nuevo tipo de habitación (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar tipo de habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idHotel\": 1,\n    \"nombre\": \"Suite Ejecutiva\",\n    \"cantidad\": 8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tipos-habitacion/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tipos-habitacion",
+								"1"
+							]
+						},
+						"description": "Actualiza un tipo de habitación existente (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar tipo de habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tipos-habitacion/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tipos-habitacion",
+								"1"
+							]
+						},
+						"description": "Elimina un tipo de habitación (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Gestión de Habitaciones",
+			"item": [
+				{
+					"name": "Obtener todas las habitaciones (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones"
+							]
+						},
+						"description": "Obtiene la lista de todas las habitaciones (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener habitación por ID (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones",
+								"1"
+							]
+						},
+						"description": "Obtiene una habitación por su ID (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroHabitacion\": 101,\n    \"idTipoHabitacion\": 1,\n    \"precioDia\": 150000,\n    \"disponible\": true,\n    \"idHotel\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones"
+							]
+						},
+						"description": "Crea una nueva habitación (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroHabitacion\": 101,\n    \"idTipoHabitacion\": 1,\n    \"precioDia\": 180000,\n    \"disponible\": true,\n    \"idHotel\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones",
+								"1"
+							]
+						},
+						"description": "Actualiza una habitación existente (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones",
+								"1"
+							]
+						},
+						"description": "Elimina una habitación (requiere rol de ADMINISTRADOR)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

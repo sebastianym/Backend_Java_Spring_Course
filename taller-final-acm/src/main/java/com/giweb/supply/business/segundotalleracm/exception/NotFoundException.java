@@ -1,0 +1,7 @@
+package com.giweb.supply.business.segundotalleracm.exception;
+
+public class NotFoundException extends RuntimeException {
+    public NotFoundException(String message) {
+        super(message);
+    }
+}

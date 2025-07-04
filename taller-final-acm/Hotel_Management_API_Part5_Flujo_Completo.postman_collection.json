@@ -1,0 +1,686 @@
+{
+	"info": {
+		"_postman_id": "f2a7b6c5-d3e4-f2a7-b6c5-d3e4f2a7b6c5",
+		"name": "Hotel Management API - Flujo Completo",
+		"description": "Flujo completo para demostrar la autenticación JWT y autorización basada en roles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0. Inicialización de Base de Datos",
+			"item": [
+				{
+					"name": "Inicializar Base de Datos (Seed)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Database initialization successful\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.message).to.eql(\"Base de datos inicializada correctamente\");",
+									"    ",
+									"    // Guardar IDs para uso posterior",
+									"    if (jsonData.createdEntities && jsonData.createdEntities.clientes && jsonData.createdEntities.clientes.length > 0) {",
+									"        pm.globals.set(\"cliente_id\", jsonData.createdEntities.clientes[0]);",
+									"    }",
+									"    ",
+									"    if (jsonData.createdEntities && jsonData.createdEntities.hoteles && jsonData.createdEntities.hoteles.length > 0) {",
+									"        pm.globals.set(\"hotel_id\", jsonData.createdEntities.hoteles[0]);",
+									"    }",
+									"    ",
+									"    if (jsonData.createdEntities && jsonData.createdEntities.habitaciones && jsonData.createdEntities.habitaciones.length > 0) {",
+									"        pm.globals.set(\"habitacion_id\", jsonData.createdEntities.habitaciones[0]);",
+									"    }",
+									"    ",
+									"    if (jsonData.createdEntities && jsonData.createdEntities.tiposHabitacion && jsonData.createdEntities.tiposHabitacion.length > 0) {",
+									"        pm.globals.set(\"tipo_habitacion_id\", jsonData.createdEntities.tiposHabitacion[0]);",
+									"    }",
+									"    ",
+									"    console.log(\"Credenciales generadas:\", jsonData.credentials);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/setup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"setup"
+							]
+						},
+						"description": "Inicializa la base de datos con datos de prueba, incluyendo usuarios para todos los roles con contraseña '12345'"
+					},
+					"response": []
+				}
+			],
+			"description": "Inicialización de la base de datos con datos de prueba"
+		},
+		{
+			"name": "1. Autenticación con Usuarios Generados",
+			"item": [
+				{
+					"name": "Login Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"cliente_token\", jsonData.token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    pm.expect(jsonData.token).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"cliente\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión como cliente usando las credenciales generadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Empleado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"empleado_token\", jsonData.token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    pm.expect(jsonData.token).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"empleado\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión como empleado usando las credenciales generadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Administrador",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"admin_token\", jsonData.token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    pm.expect(jsonData.token).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión como administrador usando las credenciales generadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Administrador General",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"admin_general_token\", jsonData.token);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has token\", function () {",
+									"    pm.expect(jsonData.token).to.not.be.undefined;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admingeneral\",\n    \"password\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Inicia sesión como administrador general usando las credenciales generadas"
+					},
+					"response": []
+				}
+			],
+			"description": "Autenticación con los usuarios generados por el endpoint de seed"
+		},
+		{
+			"name": "2. Flujo de Reserva",
+			"item": [
+				{
+					"name": "Ver Hoteles Disponibles (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/hoteles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles"
+							]
+						},
+						"description": "Ver hoteles disponibles (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Habitaciones Disponibles (Público)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones"
+							]
+						},
+						"description": "Ver habitaciones disponibles (acceso público)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Reserva (Cliente)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"reserva_id\", jsonData.idReserva);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cliente_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fechaInicio\": \"2025-08-01T14:00:00\",\n    \"fechaFinal\": \"2025-08-05T12:00:00\",\n    \"cantidadDias\": 4,\n    \"estado\": true,\n    \"fechaReserva\": \"2025-07-03T19:00:00\",\n    \"idHabitacion\": \"{{habitacion_id}}\",\n    \"idCliente\": \"{{cliente_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservas"
+							]
+						},
+						"description": "Crear una reserva (requiere autenticación como cliente)"
+					},
+					"response": []
+				},
+				{
+					"name": "Realizar Pago (Cliente)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"pago_id\", jsonData.idPago);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cliente_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fecha\": \"2025-07-03T19:30:00\",\n    \"idReserva\": \"{{reserva_id}}\",\n    \"metodoPago\": \"TARJETA_CREDITO\",\n    \"pagoTotal\": 480000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pagos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"pagos"
+							]
+						},
+						"description": "Realizar un pago (requiere autenticación como cliente)"
+					},
+					"response": []
+				},
+				{
+					"name": "Acceso Denegado - Generar Factura (Cliente)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{cliente_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idReserva\": \"{{reserva_id}}\",\n    \"idPago\": \"{{pago_id}}\",\n    \"fechaEmision\": 20250703,\n    \"valorTotal\": 480000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/facturas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"facturas"
+							]
+						},
+						"description": "Intento de generar una factura como cliente (debería ser denegado)"
+					},
+					"response": []
+				},
+				{
+					"name": "Generar Factura (Empleado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"factura_id\", jsonData.idFactura);",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{empleado_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idReserva\": \"{{reserva_id}}\",\n    \"idPago\": \"{{pago_id}}\",\n    \"fechaEmision\": 20250703,\n    \"valorTotal\": 480000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/facturas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"facturas"
+							]
+						},
+						"description": "Generar una factura (requiere autenticación como empleado)"
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Factura (Empleado)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{empleado_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/facturas/{{factura_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"facturas",
+								"{{factura_id}}"
+							]
+						},
+						"description": "Ver la factura generada (requiere autenticación como empleado)"
+					},
+					"response": []
+				}
+			],
+			"description": "Flujo completo de reserva para demostrar la autenticación y autorización"
+		},
+		{
+			"name": "3. Gestión Administrativa",
+			"item": [
+				{
+					"name": "Ver Todas las Reservas (Empleado)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{empleado_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reservas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservas"
+							]
+						},
+						"description": "Ver todas las reservas (requiere autenticación como empleado)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nueva Habitación (Administrador)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numeroHabitacion\": 501,\n    \"idTipoHabitacion\": \"{{tipo_habitacion_id}}\",\n    \"precioDia\": 180000,\n    \"disponible\": true,\n    \"idHotel\": \"{{hotel_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/habitaciones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"habitaciones"
+							]
+						},
+						"description": "Crear una nueva habitación (requiere autenticación como administrador)"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nuevo Hotel (Administrador General)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_general_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Hotel Nuevo Cali\",\n    \"ciudad\": \"Cali\",\n    \"telefono\": \"6023456789\",\n    \"correo\": \"info@nuevocali.com\",\n    \"direccion\": \"Avenida 5N #23-45, Cali\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/hoteles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"hoteles"
+							]
+						},
+						"description": "Crear un nuevo hotel (requiere autenticación como administrador general)"
+					},
+					"response": []
+				}
+			],
+			"description": "Ejemplos de gestión administrativa con diferentes roles"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
