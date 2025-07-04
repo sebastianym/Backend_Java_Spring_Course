@@ -39,6 +39,16 @@ Este proyecto implementa una API REST para un sistema de gestión de un hotel, p
 
     La API estará disponible en `http://localhost:8080`.
 
+## Configuración de la base de datos
+
+Para conectar la aplicación a la base de datos PostgreSQL, asegúrate de agregar la siguiente configuración en tu archivo 
+application.properties:
+
+- spring.datasource.url=jdbc:postgresql://ep-long-smoke-a47fvldk-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require
+- spring.datasource.username=neondb_owner
+- spring.datasource.password=npg_HEfqOSN7ILw1
+
+
 ## Endpoints de la API
 
 A continuación se listan los endpoints disponibles en la API.
